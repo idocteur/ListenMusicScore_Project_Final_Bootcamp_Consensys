@@ -1,0 +1,8 @@
+TThe contract must be deployed on the rinkeby testnet.
+
+Deployment Network name:    'rinkeby'
+Deployment Network id:      
+
+Deployed MusicToken Address: 
+    Link to see it on etherscan: 
+
