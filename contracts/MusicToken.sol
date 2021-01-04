@@ -58,8 +58,9 @@ contract MusicToken is ERC721, Ownable {
   /// @notice Returns the name of a Music
   /// @param id The Id of the music/ERC721 
   /// @return titre returns the titref the music
-  function getMusicTitre (uint id) external view returns (string memory titre) {
+  function getMusicTitre (uint id) external view returns (string memory) {
     return idToMusic[id].titre;
+    
   }
 
   

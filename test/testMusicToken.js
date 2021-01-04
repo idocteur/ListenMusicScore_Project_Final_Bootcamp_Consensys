@@ -24,6 +24,7 @@ contract("MusicToken", (accounts) => {
 
    it("can fetch the titre of a music by music Id", async () => {
     const titre = await musicToken.getMusicTitre(1);
+    console.log('titre', titre)
     assert.equal(titre, expectedTitre, "The titre of the music should be the one provided by the creator.");
    });
 

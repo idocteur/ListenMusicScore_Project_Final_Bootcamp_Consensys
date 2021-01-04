@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LISTENS MUSIC SCORE</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="./web3.min.js"></script>
+</head>
+<body class=" bg-dark">      
+    <h1 class="text-white ml-4">LISTENS MUSIC SCORE</h1>
+    <div class="container">
+        <div class="row bg-warning p-3">
+            <div class="col-6">
+                <h2>CREATE NEW SONG</h2>
+                <form id="formnewsong">
+                    <div class="form-group">
+                        <label for="titremus">NEW SONG TITLE</label>
+                        <input type="text" name="titremus" id="titremus"  class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="genremus">NEW SONG GENRE</label>
+                        <select name="genremus"  class="form-control" id="genremus" required>
+                            <option value="Gospel">Gospel</option>
+                            <option value="Soul">Soul</option>
+                            <option value="Afro">Afro</option>
+                            <option value="Compas">Compas</option>
+                            <option value="RnB">RnB</option>
+                            <option value="Rap">Rap</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="dureemus">NEW SONG DURATION</label>
+                        <input type="number" name="dureemus" id="dureemus"  class="form-control"required />
+                    </div>
+                    <button class="btn btn-primary" type="submit">ADD SONG</button>
+                </form>
+
+            </div>
+            <div class="col-6">
+                <h2>SONGS</h2>
+                <ul class="list-group" id="listsongs">
+                    
+                  </ul>
+            </div>
+        </div>
+        <script>
+            const getWeb3 = async () =>
+  new Promise((resolve, reject) => {
+    // Wait for loading completion to avoid race conditions with web3 injection timing.
+    window.addEventListener("load", async () => {
+      // Modern dapp browsers...
+      if (window.ethereum) 
+      
+      {
+          console.log("step-1")
+        const web3 = new Web3(window.ethereum);
+        try {
+            console.log("step-2")
+          /*// Request account access if needed
+          await window.ethereum.enable();
+          // Acccounts now exposed
+          resolve(web3);*/
+
+          const provider = new Web3.providers.HttpProvider(
+          "http://127.0.0.1:8545"
+        );
+
+        const web3 = new Web3(provider);
+        console.log("No web3 instance injected, using Local web3.");
+        resolve(web3);
+
+        } catch (error) {
+            console.log("step-3")
+          reject(error);
+        }
+      }
+      // Legacy dapp browsers...
+      else if (window.web3) {
+        console.log("step-4")
+        // Use Mist/MetaMask's provider.
+
+        // const web3 = window.web3;
+        // console.log("Injected web3 detected.");
+        // resolve(web3);
+
+        const provider = new Web3.providers.HttpProvider(
+          "http://127.0.0.1:8545"
+        );
+
+        const web3 = new Web3(provider);
+        console.log("No web3 instance injected, using Local web3.");
+        resolve(web3);
+      }
+      // Fallback to localhost; use dev console port by default...
+      else {
+        const provider = new Web3.providers.HttpProvider(
+          "http://127.0.0.1:8545"
+        );
+        const web3 = new Web3(provider);
+        console.log("No web3 instance injected, using Local web3.");
+        resolve(web3);
+      }
+    });
+  });
+
+  let musictoken = null;
+  let account=null;
+async function init(){
+    const web3 = await  getWeb3();
+    let response = await fetch('./contracts/MusicToken.json');
+    letMusicTokenArtifact =null;
+if (response.ok) {
+  MusicTokenArtifact = await response.json();
+}
+
+    
+    const networkId = Object.keys(MusicTokenArtifact.networks)[0];
+    const deployedNetwork = MusicTokenArtifact.networks[networkId];
+
+    
+
+
+   
+
+     const _musictoken = new  web3.eth.Contract(
+        MusicTokenArtifact.abi,
+        deployedNetwork.address,
+      );
+
+      musictoken=_musictoken;
+      console.log('music token', musictoken)
+      const _accounts = await web3.eth.getAccounts();
+      
+
+    
+
+    const _account = web3.utils.toChecksumAddress(_accounts[0]);
+    account=_account;
+    console.log('inff', deployedNetwork);
+    console.log(_account);
+
+}
+ init();
+         </script>
+
+
+
+
+        <script>
+let Allsongs=[];
+          let strge =  localStorage.getItem('Allsongs')
+            if(strge) Allsongs = JSON.parse( strge);
+
+
+
+
+let titremus = document.getElementById('titremus');
+let genremus = document.getElementById("genremus");
+let dureemus = document.getElementById('dureemus');
+let lstsongs = document.getElementById('listsongs')
+let formnewsong = document.getElementById('formnewsong');
+
+function GenreateList(){
+  return  Allsongs.map(((sng, ix)=>{
+     return   `<li class="list-group-item m-2 p-1"  data-id="${ix}">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-8">${sng.titre}</div>
+                            <div class="row">
+                                <div class="col-2">${sng.listen ? sng.listen: 0}</div>
+                            <div class="col-2">
+                                <button class="btn btn-success p-1" onclick="addlsten(${ix})">listen</button>
+                            </div>
+                        </div>
+                            
+                        </div>
+                    </li>`
+    })).join('')
+
+}
+function addlsten(id){
+    Allsongs[id].listen = (Allsongs[id].listen) ? Allsongs[id].listen+1: 1;
+    SaveSongs()
+    lstsongs.innerHTML = GenreateList();
+
+}
+
+function SaveSongs(){
+localStorage.setItem('Allsongs', JSON.stringify(Allsongs))
+}
+
+formnewsong.addEventListener('submit',async ev=>{
+    ev.preventDefault();
+    try{
+        console.log('meyhod',musictoken.methods);
+  let sng=  await musictoken.methods.getMusicListens(1).call({from: account});
+   console.log(sng);
+    } catch(ex){
+        console.log('error', ex);
+    }
+    var titre = titremus.value, genre = genremus.value, duree = dureemus.value;
+    
+    if(!titre || !genre || !duree){
+        alert('Every field must be filled');
+
+    }
+    else{
+
+        //Allsongs.push({titre, genre, duree});
+        //SaveSongs();
+
+        await musictoken.methods.createMusic(titre,genre, duree).send({from: account})
+        lstsongs.innerHTML = GenreateList();
+        formnewsong.reset();
+    }
+})
+lstsongs.innerHTML = GenreateList();
+        
+        </script>
+    </div>
+</body>
+</html>

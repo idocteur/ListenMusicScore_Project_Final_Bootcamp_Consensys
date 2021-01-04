@@ -5,8 +5,6 @@ This application aims to put music online and which will control the number of l
 
 Musictoken is a contract containining information about music like title duration and genre which  records all listening for every song for awards
 
-The react front end is not finished yet, it will be functional in a next commit
-
 To carry out this decentralized application, a "Music.sol "contract was developed to ensure the storage, the number of listening to music.
 
   
@@ -48,12 +46,10 @@ truffle compile && truffle migrate
 
 5. In your browser open Metamask, restore accounts from the ganache-cli (using the mnemonic printed on terminal) and set newtwork to Localhost 8545
 
-6. Now back to the first terminal window, in the client folder, start the local server and go to `localhost:3000`
+6. Now back to the first terminal window, in the client folder, start the local server (Live Server) and go to `localhost:5500`
 
 ```bash
-npm start
-```  
-The react front end is not finished yet, it will be functional in a next commit
+
 
 ## :triangular_flag_on_post: Testing
 
